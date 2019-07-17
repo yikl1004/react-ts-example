@@ -1,24 +1,66 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// default
+import React, { FC } from 'react';
+import { Router, Route, Link } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 
-const App: React.FC = () => {
+// components
+import TodoListContainer from 'container/TodoListContainer';
+
+
+interface IMenuItem {
+  path: string
+  name: string
+  exact?: boolean
+}
+
+class MenuItem implements IMenuItem {
+  name: string;
+  path: string;
+  exact?: boolean;
+
+  constructor(
+    path: string,
+    name: string,
+    exact?: boolean
+  ) {
+    this.path = path;
+    this.name = name;
+    
+    if ( typeof exact === 'boolean' && exact ) {
+      this.exact = exact;
+    }
+  }
+}
+
+const App: FC = (): JSX.Element => {
+  const menus: IMenuItem[] = [
+    new MenuItem('/', 'Home', true),
+    new MenuItem('/todolist', 'Todo List')
+  ];
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <header>
+       <h1>Hello, World!</h1>
+       <Router history={createBrowserHistory()}>
+         <nav>
+           <ul>
+              { menus.map((menu: IMenuItem, index: number): JSX.Element => {
+                let props = { exact: menu.exact ? menu.exact.toString() : "false" };
+                return (
+                  <li key={index}>
+                    <Link to={menu.path} {...props}>
+                      { menu.name }
+                    </Link>
+                  </li>
+                )})
+              }
+           </ul>
+         </nav>
+         <Route path="/" exact />
+         <Route path="/todolist" component={ TodoListContainer } />
+       </Router>
+     </header>
     </div>
   );
 }
