@@ -1,3 +1,5 @@
+import { ActionCreatorsMapObject } from "redux";
+
 // 
 export interface TodoItemDataParams {
   id: number
@@ -43,7 +45,14 @@ export type TodoActionTypes =
 
 let autoId: number = 0;
 
-export const actionCreators = {
+export interface TodoActionCreactors extends ActionCreatorsMapObject {
+  create(text: string): CreateAction
+  remove(id: number): RemoveAction
+  toggle(id: number): ToggleAction
+  changeInput(input: string): ChangeInputAction
+}
+
+export const actionCreators: TodoActionCreactors = {
   create(text: string) {
     return {
       type: CREATE,

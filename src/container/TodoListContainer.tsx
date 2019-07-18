@@ -2,35 +2,71 @@ import React, { FC } from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 import { StoreState } from "store/redux/modules";
-import { TodoItemDataParams, actionCreators as todosActions } from "store/redux/modules/todos";
+import { TodoItemDataParams, actionCreators as todosActions, TodoActionCreactors } from "store/redux/modules/todos";
 import TodoList from "components/todolist";
+import { useTodos } from "store/mobx";
+import { TodosMobxStore } from "store/mobx/todos";
 
 
 interface IProps {
   todoItems: TodoItemDataParams[]
   input: string
-  todosActions: typeof todosActions
+  todosActions: TodoActionCreactors
 }
 
+const STORE_MODE = process.env.REACT_APP_STORE_MODE;
 
-const TodoListContainer: FC<IProps> = ({ input, todosActions, todoItems }) => {
-  const onCreate = (): void => { todosActions.create(input) };
-  const onRemove = (id: number): void => { todosActions.remove(id) };
-  const onToggle = (id: number): void => { todosActions.toggle(id) };
-  const onChange = (e: React.FormEvent<HTMLElement>) => {
-    todosActions.changeInput((e.target as HTMLFormElement).value);
-  };
-  const todoListProps = { input, todoItems, onCreate, onRemove, onToggle, onChange }
+const TodoListContainer: FC<IProps> = ({ input, todosActions, todoItems }: IProps) => {
+  let onCreate: (text: undefined) => void,
+      onRemove: (id: number) => void,
+      onToggle: (id: number) => void,
+      onChange: (e: any) => void;
+  let todos: TodosMobxStore;
+
+  if ( STORE_MODE === 'REDUX' ) {
+    onCreate = (): void => {
+      todosActions.create(input);
+    };
+    onRemove = (id: number): void => {
+      todosActions.remove(id);
+    };
+    onToggle = (id: number): void => {
+      todosActions.toggle(id)
+    };
+    onChange = (e: React.FormEvent<HTMLElement>) => {
+      todosActions.changeInput(
+        (e.target as HTMLFormElement).value
+      );
+    };
+  } else if ( STORE_MODE === 'MOBX' ) {
+    todos = useTodos();
+    onCreate = todos.create;
+    onRemove = todos.remove;
+    onToggle = todos.toggle;
+    onChange = (e: React.FormEvent<HTMLElement>) => {
+      todos.changeInput;
+    }
+  }
   
-  return <TodoList {...todoListProps} />;
+  return (
+    <TodoList
+      input={input}
+      todoItems={todoItems}
+      onCreate={onCreate}
+      onRemove={onRemove}
+      onToggle={onToggle}
+      onChange={onChange}
+    />
+  );
 }
 
-const mapStateToProps = ({ todos }: StoreState) => ({
-  input: todos.input,
-  todoItems: todos.todoItems
-});
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  todosActions: bindActionCreators(todosActions, dispatch)
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(TodoListContainer);
+// redux
+export default connect(
+  ({ todos }: StoreState) => ({
+    input: todos.input,
+    todoItems: todos.todoItems
+  }),
+  (dispatch: Dispatch) => ({
+    todosActions: bindActionCreators(todosActions, dispatch)
+  })
+)(TodoListContainer);

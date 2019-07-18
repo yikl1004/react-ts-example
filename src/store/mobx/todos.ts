@@ -10,7 +10,7 @@ export interface TodosMobxStore {
   todoItems: TodoItemDataParams[]
   input: string
   autoId: number
-  create(text: string): void
+  create(text: string | undefined): void
   remove(id: number): void
   toggle(id: number): void
   changeInput(input: string): void

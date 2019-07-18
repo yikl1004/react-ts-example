@@ -13,7 +13,6 @@ import { Store } from 'redux';
 // import * as serviceWorker from './serviceWorker';
 
 
-
 const storeMode = process.env.REACT_APP_STORE_MODE;
 let CustomProvider = null;
 let props: { value?: any, store?: any } = {};
@@ -41,6 +40,8 @@ if ( CustomProvider !== null ) {
     document.getElementById('root')
   );
 
+} else {
+  alert('STORE flag를 통해 실행해 주세요.');
 }
 
 // If you want your app to work offline and load faster, you can change
