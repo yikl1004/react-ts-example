@@ -10,13 +10,6 @@ export interface TodoState {
   input: string
 }
 
-// action types
-// export const actionTypes = {
-//   CREATE: 'todo/CREATE',
-//   REMOVE: 'todo/REMOVE',
-//   TOGGLE: 'todo/TOGGLE',
-//   CHANGE_INPUT: 'todo/CHANGE_INPUT',
-// }
 export const CREATE = "todo/CREATE";
 export const REMOVE = "todo/REMOVE";
 export const TOGGLE = "todo/TOGGLE";
@@ -42,7 +35,11 @@ interface ChangeInputAction {
   meta: { input: string }
 }
 
-export type TodoActionTypes = RemoveAction | CreateAction | ToggleAction | ChangeInputAction;
+export type TodoActionTypes =
+  | RemoveAction
+  | CreateAction
+  | ToggleAction
+  | ChangeInputAction;
 
 let autoId: number = 0;
 
@@ -84,18 +81,25 @@ const initialState: TodoState = {
   input: ''
 };
 
-export function todoReducer( state: TodoState = initialState, action: TodoActionTypes ): TodoState {
-  console.log(action)
+export function todoReducer(
+  state: TodoState = initialState,
+  action: TodoActionTypes
+): TodoState {
   switch(action.type) {
     case CREATE:
       return {
         input: '',
-        todoItems: [...state.todoItems, action.payload]
+        todoItems: [
+          ...state.todoItems,
+          action.payload
+        ]
       };
     case REMOVE:
       return {
         ...state,
-        todoItems: state.todoItems.filter(todo => todo.id !== action.meta.id)
+        todoItems: state.todoItems.filter(
+          todo => todo.id !== action.meta.id
+        )
       };
     case TOGGLE:
       return {
