@@ -31,6 +31,8 @@ if ( storeMode === 'MOBX' ) {
 
 }
 
+console.log('REACT_APP_STORE_MODE', storeMode);
+
 if ( CustomProvider !== null ) {
 
   ReactDOM.render(

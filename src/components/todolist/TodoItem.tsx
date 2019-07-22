@@ -10,6 +10,7 @@ interface IProps {
 }
 
 const TodoItem: FunctionComponent<IProps> = ({ text, done, onToggle, onRemove }) => {
+  console.log(text);
   return (
     <li>
       <b

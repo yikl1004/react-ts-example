@@ -5,7 +5,7 @@ import { TodoItemDataParams } from "store/redux/modules/todos";
 interface IProps {
   input: string
   todoItems: TodoItemDataParams[]
-  onCreate(): void
+  onCreate(text?: string | undefined): void
   onRemove(id: number): void
   onToggle(id: number): void
   onChange(e: any): void
@@ -43,7 +43,7 @@ const TodoList: FC<IProps> = ({
         <button type="submit">추가하기</button>
       </form>
       <ul>
-        { todoItems && todoItems.map((todo: TodoItemState, index: number) => (
+        { todoItems && todoItems.map((todo: TodoItemDataParams, index: number) => (
           <TodoItem
             key={index}
             done={todo.done}

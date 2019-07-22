@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, autorun } from 'mobx';
 
 export interface TodoItemDataParams {
   id: number
@@ -10,7 +10,7 @@ export interface TodosMobxStore {
   todoItems: TodoItemDataParams[]
   input: string
   autoId: number
-  create(text: string | undefined): void
+  create(): void
   remove(id: number): void
   toggle(id: number): void
   changeInput(input: string): void
@@ -23,13 +23,14 @@ export const createTodoStore = () => {
     input: '',
     autoId: 0,
 
-    create(text: string): void {
+    create(): void {
       this.autoId += 1;
       this.todoItems = this.todoItems.concat({
         id: this.autoId,
-        text,
+        text: this.input,
         done: false
       });
+      this.input = '';
     },
     remove(id: number): void {
       this.todoItems = this.todoItems.filter(todo => todo.id !== id);
@@ -52,7 +53,11 @@ export const createTodoStore = () => {
     remove: action,
     toggle: action,
     changeInput: action
-  }
+  };
 
   return observable(store, actions);
 }
+
+autorun(reaction => {
+  reaction.dispose();
+});
