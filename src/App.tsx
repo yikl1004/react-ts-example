@@ -5,6 +5,8 @@ import { createBrowserHistory } from 'history';
 
 // components
 import TodoListContainer from 'container/TodoListContainer';
+import ModalContainer from 'components/modal/ModalContainer';
+import { useModal } from 'store/mobx';
 
 
 interface IMenuItem {
@@ -37,6 +39,7 @@ const App: FC = (): JSX.Element => {
     new MenuItem('/', 'Home', true),
     new MenuItem('/todolist', 'Todo List')
   ];
+  const modals = useModal();
 
   return (
     <div className="App">
@@ -55,12 +58,16 @@ const App: FC = (): JSX.Element => {
                   </li>
                 )})
               }
+              <li><button onClick={modals.showModal}>open modal</button></li>
            </ul>
          </nav>
          <Route path="/" exact />
          <Route path="/todolist" component={ TodoListContainer } />
        </Router>
      </header>
+     <ModalContainer>
+        여기 모달 이다.
+    </ModalContainer>
     </div>
   );
 }

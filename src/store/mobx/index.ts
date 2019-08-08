@@ -1,9 +1,11 @@
+import { createModalStore } from './modal';
 import { createTodoStore } from './todos';
 import { createContext, useContext } from 'react';
 
 
 export class RootStore {
   todos = createTodoStore();
+  modal = createModalStore();
 }
 
 
@@ -20,4 +22,10 @@ export const useTodos = () => {
   const global = useContext(globalContext);
 
   return global.rootStore.todos;
+}
+
+export const useModal = () => {
+    const global = useContext(globalContext);
+
+    return global.rootStore.modal;
 }

@@ -1,4 +1,4 @@
-import { observable, action, autorun } from 'mobx';
+import { observable, action } from 'mobx';
 
 export interface TodoItemDataParams {
   id: number
@@ -16,48 +16,43 @@ export interface TodosMobxStore {
   changeInput(input: string): void
 }
 
-export const createTodoStore = () => {
+class Todos implements TodosMobxStore {
+    @observable public todoItems: TodoItemDataParams[] = [];
+    @observable public input: string = '';
+    @observable public autoId: number = 0;
 
-  const store: TodosMobxStore = {
-    todoItems: [],
-    input: '',
-    autoId: 0,
-
-    create(): void {
-      this.autoId += 1;
-      this.todoItems = this.todoItems.concat({
-        id: this.autoId,
-        text: this.input,
-        done: false
-      });
-      this.input = '';
-    },
-    remove(id: number): void {
-      this.todoItems = this.todoItems.filter(todo => todo.id !== id);
-    },
-    toggle(id: number): void {
-      this.todoItems = this.todoItems.map(todo => {
-        if (todo.id === id) {
-          todo.done = !todo.done;
-        }
-        return todo;
-      })
-    },
-    changeInput(input: string) {
-      this.input = input;
+    @action
+    public create(): void {
+        this.autoId += 1;
+        this.todoItems = this.todoItems.concat({
+            id: this.autoId,
+            text: this.input,
+            done: false
+        });
+        this.input = '';
     }
-  };
 
-  const actions = {
-    create: action,
-    remove: action,
-    toggle: action,
-    changeInput: action
-  };
+    @action
+    public remove(id: number): void {
+        this.todoItems = this.todoItems.filter(todo => todo.id !== id);
+    }
 
-  return observable(store, actions);
+    @action
+    public toggle(id: number): void {
+        this.todoItems = this.todoItems.map(todo => {
+            if (todo.id === id) {
+                todo.done = !todo.done;
+            }
+            return todo;
+        })
+    }
+
+    @action
+    public changeInput(input: string) {
+        this.input = input;
+    }
 }
 
-autorun(reaction => {
-  reaction.dispose();
-});
+export const createTodoStore = () => {
+    return new Todos();
+}
